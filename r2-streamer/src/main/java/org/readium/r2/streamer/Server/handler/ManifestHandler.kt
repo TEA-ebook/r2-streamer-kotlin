@@ -37,11 +37,8 @@ class ManifestHandler : RouterNanoHTTPD.DefaultHandler() {
 
     override fun get(uriResource: RouterNanoHTTPD.UriResource?, urlParams: Map<String, String>?, session: IHTTPSession?): Response {
         try {
-
             val fetcher = uriResource!!.initParameter(Fetcher::class.java)
-
-            val objectMapper = ObjectMapper()
-            val json = objectMapper.writeValueAsString(fetcher.publication)
+            val json = fetcher.publication.manifest()
 
             return newFixedLengthResponse(status, mimeType, json)
 
