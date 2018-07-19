@@ -39,6 +39,7 @@ class ManifestHandler : RouterNanoHTTPD.DefaultHandler() {
         try {
             val fetcher = uriResource!!.initParameter(Fetcher::class.java)
             val json = fetcher.publication.manifest()
+            println(TAG + " manifest json " + json)
 
             return newFixedLengthResponse(status, mimeType, json)
 
@@ -56,6 +57,6 @@ class ManifestHandler : RouterNanoHTTPD.DefaultHandler() {
     }
 
     companion object {
-        private val TAG = "ManifestHandler"
+        private val TAG = "[TEA] ManifestHandler"
     }
 }
