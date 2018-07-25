@@ -8,6 +8,7 @@ package org.readium.r2.streamer.server
 
 import android.content.Context
 import android.content.res.AssetManager
+import android.util.Log
 import org.nanohttpd.router.RouterNanoHTTPD
 import org.readium.r2.shared.Publication
 import org.readium.r2.streamer.container.Container
@@ -68,6 +69,9 @@ abstract class AbstractServer(private var port: Int) : RouterNanoHTTPD(port) {
 
         addLinks(publication, fileName)
 
+        Log.d(this::class.java.simpleName, "publication.addSelfLink()")
+        Log.d(this::class.java.simpleName, fileName)
+        Log.d(this::class.java.simpleName, "$BASE_URL:$port")
         publication.addSelfLink(fileName, URL("$BASE_URL:$port"))
 
         if (containsMediaOverlay) {
