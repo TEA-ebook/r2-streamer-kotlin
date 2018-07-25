@@ -1,7 +1,5 @@
 package org.readium.r2.streamer.parser.epub
 
-import android.util.Log
-import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.readium.r2.shared.parser.xml.XmlParser
