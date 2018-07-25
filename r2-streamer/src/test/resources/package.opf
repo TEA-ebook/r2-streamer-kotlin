@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://www.idpf.org/2007/opf" xml:lang="fr" prefix="rendition: http://www.idpf.org/vocab/rendition/#" unique-identifier="uid" version="3.0">
+  <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <dc:title>Astérix chez les Pictes - 35</dc:title>
+    <dc:identifier id="uid">9782864973072</dc:identifier>
+    <dc:language>fr</dc:language>
+    <dc:creator id="creator">René Goscinny, Albert UDerzo, Jean-Yves Ferri, Didier Conrad</dc:creator>
+    <meta refines="creator" property="role" scheme="marc:relators">aut</meta>
+    <dc:publisher>Editions Albert René</dc:publisher>
+    <dc:date>2013-10-24</dc:date>
+    <dc:rights>Editions Albert René</dc:rights>
+    <meta property="dcterms:modified">2015-04-17T13:42:42Z</meta>
+    <meta property="rendition:layout">pre-paginated</meta>
+    <meta property="rendition:orientation">auto</meta>
+    <meta property="rendition:spread">auto</meta>
+    <meta name="cover" content="cover-image"/>
+  </metadata>
+  <manifest>
+    <item id="nav" href="Navigation/nav.xhtml" properties="nav" media-type="application/xhtml+xml"/>
+    <item id="css" href="Style/style.css" media-type="text/css"/>
+    <item id="cover-image" href="Image/cover.jpg" media-type="image/jpeg"/>
+    <item id="cover-page" href="Content/cover.xhtml" media-type="application/xhtml+xml"/>
+    <item id="pb-page" href="Content/pb.xhtml" media-type="application/xhtml+xml"/>
+    <item id="image-0" href="Image/9782864973072-0.jpg" media-type="image/jpeg"/>
+    <item id="image-1" href="Image/9782864973072-1.jpg" media-type="image/jpeg"/>
+    <item id="image-2" href="Image/9782864973072-2.jpg" media-type="image/jpeg"/>
+    <item id="image-3" href="Image/9782864973072-3.jpg" media-type="image/jpeg"/>
+    <item id="image-4" href="Image/9782864973072-4.jpg" media-type="image/jpeg"/>
+    <item id="image-5" href="Image/9782864973072-5.jpg" media-type="image/jpeg"/>
+    <item id="page-0" href="Content/9782864973072-0.xhtml" media-type="application/xhtml+xml"/>
+    <item id="page-1" href="Content/9782864973072-1.xhtml" media-type="application/xhtml+xml"/>
+    <item id="page-2" href="Content/9782864973072-2.xhtml" media-type="application/xhtml+xml"/>
+    <item id="page-3" href="Content/9782864973072-3.xhtml" media-type="application/xhtml+xml"/>
+    <item id="page-4" href="Content/9782864973072-4.xhtml" media-type="application/xhtml+xml"/>
+    <item id="page-5" href="Content/9782864973072-5.xhtml" media-type="application/xhtml+xml"/>
+  </manifest>
+  <spine page-progression-direction="ltr">
+    <itemref idref="cover-page" properties="page-spread-right"/>
+    <itemref idref="pb-page" properties="page-spread-left"/>
+    <itemref idref="page-0" properties="page-spread-right"/>
+    <itemref idref="page-1" properties="page-spread-left"/>
+    <itemref idref="page-2" properties="page-spread-right"/>
+    <itemref idref="page-3" properties="page-spread-left"/>
+    <itemref idref="page-4" properties="page-spread-right"/>
+    <itemref idref="page-5" properties="page-spread-left"/>
+  </spine>
+</package>

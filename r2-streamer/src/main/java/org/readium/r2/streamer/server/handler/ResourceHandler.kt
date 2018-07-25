@@ -58,7 +58,6 @@ class ResourceHandler : RouterNanoHTTPD.DefaultHandler() {
 
         try {
             val fetcher = uriResource!!.initParameter(Fetcher::class.java)
-            println(TAG + " Fetcher Publication cover link " + fetcher.publication.coverLink.toString())
 
             val offset = encodedUri.indexOf("/", 0)
             val startIndex = encodedUri.indexOf("/", offset + 1)
