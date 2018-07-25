@@ -62,7 +62,7 @@ class ResourceHandler : RouterNanoHTTPD.DefaultHandler() {
             val offset = encodedUri.indexOf("/", 0)
             val startIndex = encodedUri.indexOf("/", offset + 1)
             val filePath = encodedUri.substring(startIndex + 1)
-            val link = fetcher.publication.linkWithHref("/$filePath")!!
+            val link = fetcher.publication.linkWithHref(filePath)!!
             val mimeType = link.typeLink!!
 
             // If the content is of type html return the response this is done to
