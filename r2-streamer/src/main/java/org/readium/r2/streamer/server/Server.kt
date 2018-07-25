@@ -69,9 +69,6 @@ abstract class AbstractServer(private var port: Int) : RouterNanoHTTPD(port) {
 
         addLinks(publication, fileName)
 
-        Log.d(this::class.java.simpleName, "publication.addSelfLink()")
-        Log.d(this::class.java.simpleName, fileName)
-        Log.d(this::class.java.simpleName, "$BASE_URL:$port")
         publication.addSelfLink(fileName, URL("$BASE_URL:$port"))
 
         if (containsMediaOverlay) {
