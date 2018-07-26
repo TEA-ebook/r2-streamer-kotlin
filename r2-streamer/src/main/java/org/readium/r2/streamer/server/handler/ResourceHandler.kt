@@ -78,8 +78,7 @@ class ResourceHandler : RouterNanoHTTPD.DefaultHandler() {
 
             return serveResponse(session, fetcher.dataStream(filePath), mimeType)
         } catch (e: Exception) {
-            println(TAG + " Exception " + e.toString())
-            println(TAG + " Stracktrace " + Log.getStackTraceString(e))
+            println(TAG + " Exception " + Log.getStackTraceString(e))
             Log.e(TAG, e.toString(), e)
             return newFixedLengthResponse(Status.INTERNAL_ERROR, mimeType, ResponseStatus.FAILURE_RESPONSE)
         }
