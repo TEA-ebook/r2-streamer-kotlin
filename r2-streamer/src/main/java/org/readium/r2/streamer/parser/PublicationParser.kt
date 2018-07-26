@@ -39,5 +39,5 @@ fun normalize(base: String, href: String?): String {
     for (component in normalizedComponents) {
         normalizedString += "/$component"
     }
-    return normalizedString
+    return normalizedString.substring(1)
 }
