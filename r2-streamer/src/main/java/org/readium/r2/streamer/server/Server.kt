@@ -26,6 +26,7 @@ abstract class AbstractServer(private var port: Int) : RouterNanoHTTPD(port) {
 //    private val SEARCH_QUERY_HANDLE = "/search"
     private val JSON_MANIFEST_HANDLE = "/manifest.json"
     private val MANIFEST_HANDLE = "/manifest"
+    private val JSON_MANIFEST_HANDLE = "/manifest.json"
     private val MANIFEST_ITEM_HANDLE = "/(.*)"
     private val MEDIA_OVERLAY_HANDLE = "/media-overlay"
     private val CSS_HANDLE = "/styles/(.*)"
