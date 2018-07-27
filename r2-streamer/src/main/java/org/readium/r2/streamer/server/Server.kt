@@ -8,7 +8,6 @@ package org.readium.r2.streamer.server
 
 import android.content.Context
 import android.content.res.AssetManager
-import android.util.Log
 import org.nanohttpd.router.RouterNanoHTTPD
 import org.readium.r2.shared.Publication
 import org.readium.r2.streamer.container.Container
@@ -26,7 +25,6 @@ abstract class AbstractServer(private var port: Int) : RouterNanoHTTPD(port) {
 //    private val SEARCH_QUERY_HANDLE = "/search"
     private val JSON_MANIFEST_HANDLE = "/manifest.json"
     private val MANIFEST_HANDLE = "/manifest"
-    private val JSON_MANIFEST_HANDLE = "/manifest.json"
     private val MANIFEST_ITEM_HANDLE = "/(.*)"
     private val MEDIA_OVERLAY_HANDLE = "/media-overlay"
     private val CSS_HANDLE = "/styles/(.*)"
