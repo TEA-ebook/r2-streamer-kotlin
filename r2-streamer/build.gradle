@@ -44,6 +44,7 @@ dependencies {
 
 //    uncomment this line to use with jitpack
     implementation 'com.github.TEA-ebook:r2-shared-kotlin:tea-SNAPSHOT'
+
 //    implementation 'com.github.readium:r2-shared-kotlin:0.1.0'
 
 //    uncomment this line to use with GitHu submodules and Android Studio Modules
