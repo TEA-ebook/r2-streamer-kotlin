@@ -30,7 +30,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
     productFlavors {
         intTestapp {
             dimension "testapp"
@@ -55,15 +54,15 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation 'com.jakewharton.timber:timber:4.7.0'
 
-    intTestappImplementation 'com.github.TEA-ebook:r2-shared-kotlin:tea-SNAPSHOT'
-    intTestappWithLcpImplementation 'com.github.TEA-ebook:r2-shared-kotlin:tea-SNAPSHOT'
+    intTestappImplementation 'com.github.readium:r2-shared-kotlin:develop-SNAPSHOT'
+    intTestappWithLcpImplementation 'com.github.readium:r2-shared-kotlin:develop-SNAPSHOT'
 
     if (findProject(':r2-shared')) {
         devTestappImplementation project(':r2-shared')
         devTestappWithLcpImplementation project(':r2-shared')
     }
-    intTestappImplementation 'com.github.readium:r2-shared-kotlin:develop-SNAPSHOT'
-    intTestappWithLcpImplementation 'com.github.readium:r2-shared-kotlin:develop-SNAPSHOT'
+    intTestappImplementation 'com.github.TEA-ebook:r2-shared-kotlin:tea-SNAPSHOT'
+    intTestappWithLcpImplementation 'com.github.TEA-ebook:r2-shared-kotlin:tea-SNAPSHOT'
 
     //TODO conflicting support libraries, excluding these
     implementation ('com.mcxiaoke.koi:core:0.5.5') {
@@ -93,5 +92,4 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
-    testImplementation "org.robolectric:robolectric:3.0"
 }
