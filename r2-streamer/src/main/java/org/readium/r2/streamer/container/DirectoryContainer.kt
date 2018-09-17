@@ -20,7 +20,7 @@ interface DirectoryContainer : Container {
         val epubFile = File(filePath)
 
         if (!epubFile.exists())
-            throw Exception("Missing File")
+            throw Exception("Missing File at path: " + filePath)
 
         val buffer = ByteArrayOutputStream()
         var nRead: Int
