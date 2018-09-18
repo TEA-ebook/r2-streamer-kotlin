@@ -139,10 +139,13 @@ class EpubParser : PublicationParser {
     }
 
     private fun scanForDrm(container: EpubContainer): Drm? {
-        if (ZipUtil.containsEntry(File(container.rootFile.rootPath), lcplFilePath)) {
-            return Drm(Drm.Brand.Lcp)
+        return try {
+            container.data(container.rootFile.rootPath + "/" + lcplFilePath)
+            Drm(Drm.Brand.Lcp)
+        } catch (e: Exception) {
+            Log.d("Debug", "Missing File : ${container.rootFile.rootPath + "/" + lcplFilePath}")
+            null
         }
-        return null
     }
 
     private fun parseEncryption(container: EpubContainer, publication: Publication, drm: Drm?) {
