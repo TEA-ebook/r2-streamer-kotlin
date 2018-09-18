@@ -16,7 +16,7 @@ import java.io.FileInputStream
 interface DirectoryContainer : Container {
 
     override fun data(relativePath: String): ByteArray {
-        val filePath = rootFile.toString() + "/" + relativePath
+        val filePath = rootFile.rootPath + "/" + relativePath
         val epubFile = File(filePath)
 
         if (!epubFile.exists())
