@@ -30,7 +30,6 @@ interface DirectoryContainer : Container {
 
         nRead = fis!!.read(data, 0, data.size)
         while (nRead != -1) {
-            Log.i("YOOOO", "write to buffer " + nRead)
             buffer.write(data, 0, nRead)
             nRead = fis.read(data, 0, data.size)
         }
@@ -41,9 +40,9 @@ interface DirectoryContainer : Container {
     }
 
     override fun dataLength(relativePath: String) =
-            File(rootFile.toString() + "/" + relativePath).length()
+            File(rootFile.rootPath + "/" + relativePath).length()
 
     override fun dataInputStream(relativePath: String) =
-            FileInputStream(File(rootFile.toString() + "/" + relativePath))
+            FileInputStream(File(rootFile.rootPath + "/" + relativePath))
 }
 
