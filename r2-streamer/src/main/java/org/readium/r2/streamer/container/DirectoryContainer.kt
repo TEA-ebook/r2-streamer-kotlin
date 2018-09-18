@@ -22,15 +22,16 @@ interface DirectoryContainer : Container {
         if (!epubFile.exists())
             throw Exception("Missing File at path: " + filePath)
 
+        val fis = FileInputStream(epubFile)
         val buffer = ByteArrayOutputStream()
         var nRead: Int
         val data = ByteArray(16384)
-        val fis = FileInputStream(epubFile)
 
-        do {
-            nRead = fis.read(data, 0, data.size)
+        nRead = fis!!.read(data, 0, data.size)
+        while (nRead != -1) {
             buffer.write(data, 0, nRead)
-        } while (nRead != -1)
+            nRead = fis.read(data, 0, data.size)
+        }
 
         buffer.flush()
 
