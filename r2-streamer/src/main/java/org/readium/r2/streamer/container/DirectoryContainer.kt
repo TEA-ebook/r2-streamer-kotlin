@@ -9,6 +9,7 @@
 
 package org.readium.r2.streamer.container
 
+import android.util.Log
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
@@ -29,6 +30,7 @@ interface DirectoryContainer : Container {
 
         nRead = fis!!.read(data, 0, data.size)
         while (nRead != -1) {
+            Log.i("YOOOO", "write to buffer " + nRead)
             buffer.write(data, 0, nRead)
             nRead = fis.read(data, 0, data.size)
         }
