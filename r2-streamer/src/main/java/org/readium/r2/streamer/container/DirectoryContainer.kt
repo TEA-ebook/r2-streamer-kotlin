@@ -13,36 +13,38 @@ import android.util.Log
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
+import java.net.URI
 
 interface DirectoryContainer : Container {
 
     override fun data(relativePath: String): ByteArray {
-        val filePath = rootFile.rootPath + "/" + relativePath
-        val epubFile = File(filePath)
+        val decodedFilePath = rootFile.rootPath + "/" + getDecodedRelativePath(relativePath)
+        val file = File(decodedFilePath)
 
-        if (!epubFile.exists())
-            throw Exception("Missing File at path: " + filePath)
+        if (!file.exists())
+            throw Exception("Missing File")
 
-        val fis = FileInputStream(epubFile)
-        val buffer = ByteArrayOutputStream()
-        var nRead: Int
-        val data = ByteArray(16384)
+        val outputStream = ByteArrayOutputStream()
+        var readLength = 0
+        val buffer = ByteArray(16384)
+        val inputStream = FileInputStream(file)
 
-        nRead = fis!!.read(data, 0, data.size)
-        while (nRead != -1) {
-            buffer.write(data, 0, nRead)
-            nRead = fis.read(data, 0, data.size)
-        }
 
-        buffer.flush()
+        while (inputStream.read(buffer).let { readLength = it; it != -1 })
+            outputStream.write(buffer, 0, readLength)
 
-        return buffer.toByteArray()
+        inputStream.close()
+        return outputStream.toByteArray()
     }
 
     override fun dataLength(relativePath: String) =
-            File(rootFile.rootPath + "/" + relativePath).length()
+            File(rootFile.toString() + "/" + getDecodedRelativePath(relativePath)).length()
 
     override fun dataInputStream(relativePath: String) =
-            FileInputStream(File(rootFile.rootPath + "/" + relativePath))
+            FileInputStream(File(rootFile.toString() + "/" + getDecodedRelativePath(relativePath)))
+
+    fun getDecodedRelativePath(relativePath: String): String {
+        return URI(relativePath).path
+    }
 }
 
