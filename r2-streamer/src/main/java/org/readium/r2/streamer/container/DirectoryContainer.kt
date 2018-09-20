@@ -38,10 +38,10 @@ interface DirectoryContainer : Container {
     }
 
     override fun dataLength(relativePath: String) =
-            File(rootFile.toString() + "/" + getDecodedRelativePath(relativePath)).length()
+            File(rootFile.rootPath + "/" + getDecodedRelativePath(relativePath)).length()
 
     override fun dataInputStream(relativePath: String) =
-            FileInputStream(File(rootFile.toString() + "/" + getDecodedRelativePath(relativePath)))
+            FileInputStream(File(rootFile.rootPath + "/" + getDecodedRelativePath(relativePath)))
 
     fun getDecodedRelativePath(relativePath: String): String {
         return URI(relativePath).path
