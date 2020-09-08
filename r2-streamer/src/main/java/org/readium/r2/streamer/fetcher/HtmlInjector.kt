@@ -75,6 +75,7 @@ internal class HtmlInjector(
         endIncludes.add(getHtmlScript("/assets/scripts/utils.js"))
         endIncludes.add(getHtmlScript("/assets/scripts/crypto-sha256.js"))
         endIncludes.add(getHtmlScript("/assets/scripts/highlight.js"))
+        endIncludes.add(getHtmlScript("/assets/scripts/epub-cfi.js"))
 
         customResources?.let {
             // Inject all custom resourses
