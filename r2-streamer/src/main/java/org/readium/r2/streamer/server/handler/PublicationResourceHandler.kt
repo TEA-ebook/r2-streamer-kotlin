@@ -24,9 +24,7 @@ import org.readium.r2.shared.format.MediaType
 import org.readium.r2.streamer.BuildConfig.DEBUG
 import org.readium.r2.streamer.server.ServingFetcher
 import timber.log.Timber
-import java.io.IOException
 import java.io.InputStream
-
 
 class PublicationResourceHandler : RouterNanoHTTPD.DefaultHandler() {
 
@@ -111,7 +109,8 @@ class PublicationResourceHandler : RouterNanoHTTPD.DefaultHandler() {
                     }
 
             } else {
-                createResponse(Status.PARTIAL_CONTENT, mimeType, ResourceInputStream(resource, startFrom..endAt), dataLength)
+                val responseStream = ResourceInputStream(resource, autocloseResource = true, range = startFrom..endAt)
+                createResponse(Status.PARTIAL_CONTENT, mimeType, responseStream, dataLength)
                     .apply {
                         addHeader("Content-Range", "bytes $startFrom-$endAt/$dataLength")
                         addHeader("ETag", etag)
@@ -124,7 +123,7 @@ class PublicationResourceHandler : RouterNanoHTTPD.DefaultHandler() {
                         resource.close()
                     }
             else {
-                createResponse(Status.OK, mimeType, ResourceInputStream(resource), dataLength)
+                createResponse(Status.OK, mimeType, ResourceInputStream(resource, autocloseResource = true), dataLength)
                     .apply {
                         addHeader("ETag", etag)
                     }
@@ -133,7 +132,7 @@ class PublicationResourceHandler : RouterNanoHTTPD.DefaultHandler() {
     }
 
     private fun createResponse(status: Status, mimeType: String, data: InputStream, dataLength: Long): Response {
-        val response = newChunkedResponse(status, mimeType, data)
+        val response = newChunkedResponse(status, mimeType, data.buffered(org.readium.r2.streamer.server.DEFAULT_BUFFER_SIZE))
         response.addHeader("Accept-Ranges", "bytes")
         response.addHeader("Content-Length", dataLength.toString())
         return response
