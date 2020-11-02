@@ -45,5 +45,6 @@ internal class PublicationContainer(
     override fun dataInputStream(relativePath: String): InputStream =
         ResourceInputStream(publication.get(relativePath), autocloseResource = true).buffered(org.readium.r2.streamer.server.DEFAULT_BUFFER_SIZE)
 
+
     private fun Publication.get(href: String) = get(Link(href))
 }
