@@ -14,25 +14,29 @@ import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
 import org.readium.r2.shared.PdfSupport
 import org.readium.r2.shared.drm.DRM
+import org.readium.r2.shared.fetcher.ArchiveFetcher
 import org.readium.r2.shared.fetcher.Fetcher
+import org.readium.r2.shared.fetcher.FileFetcher
 import org.readium.r2.shared.fetcher.TransformingFetcher
-import org.readium.r2.shared.format.Format
-import org.readium.r2.shared.format.MediaType
 import org.readium.r2.shared.publication.Manifest
 import org.readium.r2.shared.publication.Publication
+import org.readium.r2.shared.publication.asset.FileAsset
+import org.readium.r2.shared.publication.asset.PublicationAsset
 import org.readium.r2.shared.publication.services.PerResourcePositionsService
-import org.readium.r2.shared.util.File
-
+import org.readium.r2.shared.publication.services.locatorServiceFactory
+import org.readium.r2.shared.publication.services.positionsServiceFactory
 import org.readium.r2.shared.util.logging.WarningLogger
+import org.readium.r2.shared.util.mediatype.MediaType
 import org.readium.r2.shared.util.pdf.PdfDocumentFactory
 import org.readium.r2.streamer.DefaultPdfDocumentFactory
 import org.readium.r2.streamer.PublicationParser
 import org.readium.r2.streamer.container.ContainerError
 import org.readium.r2.streamer.container.PublicationContainer
-import org.readium.r2.streamer.extensions.fromFile
 import org.readium.r2.streamer.fetcher.LcpDecryptor
 import org.readium.r2.streamer.parser.PubBox
+import org.readium.r2.streamer.parser.audio.AudioLocatorService
 import org.readium.r2.streamer.toPublicationType
+import java.io.File
 import java.io.FileNotFoundException
 
 /**
@@ -44,16 +48,16 @@ class ReadiumWebPubParser(private val pdfFactory: PdfDocumentFactory? = null) : 
     constructor(context: Context) : this(pdfFactory = DefaultPdfDocumentFactory(context))
 
     override suspend fun parse(
-        file: File,
+        asset: PublicationAsset,
         fetcher: Fetcher,
         warnings: WarningLogger?
     ): Publication.Builder? {
 
-        if (file.format()?.mediaType?.isReadiumWebPubProfile != true)
+        if (!asset.mediaType().isReadiumWebPubProfile)
             return null
 
         val manifest =
-            if (file.format()?.mediaType?.isRwpm == true) {
+            if (asset.mediaType().isRwpm) {
                 val manifestLink = fetcher.links().firstOrNull()
                     ?: error("Empty fetcher.")
                 val manifestJson = fetcher.get(manifestLink).use {
@@ -75,18 +79,22 @@ class ReadiumWebPubParser(private val pdfFactory: PdfDocumentFactory? = null) : 
         // Checks the requirements from the LCPDF specification.
         // https://readium.org/lcp-specs/notes/lcp-for-pdf.html
         val readingOrder = manifest.readingOrder
-        if (file.format() == Format.LCP_PROTECTED_PDF && (readingOrder.isEmpty() || !readingOrder.all { it.mediaType?.matches(MediaType.PDF) == true })) {
+        if (asset.mediaType() == MediaType.LCP_PROTECTED_PDF && (readingOrder.isEmpty() || !readingOrder.all { it.mediaType.matches(MediaType.PDF) })) {
             throw Exception("Invalid LCP Protected PDF.")
         }
 
-        val positionsService = when(file.format()) {
-            Format.LCP_PROTECTED_PDF ->
-                pdfFactory?.let { LcpdfPositionsService.create(it) }
-            Format.DIVINA_MANIFEST, Format.DIVINA ->
-                PerResourcePositionsService.createFactory("image/*")
-            else -> null
+        val servicesBuilder = Publication.ServicesBuilder().apply {
+            when (asset.mediaType()) {
+                MediaType.LCP_PROTECTED_PDF ->
+                    positionsServiceFactory = pdfFactory?.let { LcpdfPositionsService.create(it) }
+
+                MediaType.DIVINA_MANIFEST, MediaType.DIVINA ->
+                    positionsServiceFactory = PerResourcePositionsService.createFactory("image/*")
+
+                MediaType.READIUM_AUDIOBOOK, MediaType.READIUM_AUDIOBOOK_MANIFEST, MediaType.LCP_PROTECTED_AUDIOBOOK ->
+                    locatorServiceFactory = AudioLocatorService.createFactory()
+            }
         }
-        val servicesBuilder = Publication.ServicesBuilder(positions = positionsService)
 
         return Publication.Builder(manifest, fetcher, servicesBuilder)
     }
@@ -94,9 +102,10 @@ class ReadiumWebPubParser(private val pdfFactory: PdfDocumentFactory? = null) : 
     override fun parse(fileAtPath: String, fallbackTitle: String): PubBox? = runBlocking {
 
         val file = File(fileAtPath)
-        val format = file.format() ?: return@runBlocking null
+        val asset = FileAsset(file)
+        val mediaType = asset.mediaType()
         var baseFetcher = try {
-            Fetcher.fromFile(file.file)
+            ArchiveFetcher.fromPath(file.path) ?: FileFetcher(href = "/${file.name}", file = file)
         } catch (e: SecurityException) {
             return@runBlocking null
         } catch (e: FileNotFoundException) {
@@ -109,21 +118,21 @@ class ReadiumWebPubParser(private val pdfFactory: PdfDocumentFactory? = null) : 
         }
 
         val builder = try {
-            parse(file, baseFetcher)
+            parse(asset, baseFetcher)
         } catch (e: Exception) {
             return@runBlocking null
         } ?: return@runBlocking null
 
         val publication = builder.build()
-            .apply { type = format.toPublicationType() }
+            .apply { type = mediaType.toPublicationType() }
 
         val container = PublicationContainer(
             publication = publication,
-            path = file.file.canonicalPath,
-            mediaType = format.mediaType,
+            path = file.canonicalPath,
+            mediaType = mediaType,
             drm = drm
         ).apply {
-            if (!format.mediaType.isRwpm) {
+            if (!mediaType.isRwpm) {
                 rootFile.rootFilePath = "manifest.json"
             }
         }
@@ -134,3 +143,10 @@ class ReadiumWebPubParser(private val pdfFactory: PdfDocumentFactory? = null) : 
 
 private suspend fun Fetcher.isProtectedWithLcp(): Boolean =
     get("license.lcpl").use { it.length().isSuccess }
+
+/** Returns whether this media type is of a Readium Web Publication profile. */
+private val MediaType.isReadiumWebPubProfile: Boolean get() =  matchesAny(
+    MediaType.READIUM_WEBPUB, MediaType.READIUM_WEBPUB_MANIFEST,
+    MediaType.READIUM_AUDIOBOOK, MediaType.READIUM_AUDIOBOOK_MANIFEST, MediaType.LCP_PROTECTED_AUDIOBOOK,
+    MediaType.DIVINA, MediaType.DIVINA_MANIFEST, MediaType.LCP_PROTECTED_PDF
+)

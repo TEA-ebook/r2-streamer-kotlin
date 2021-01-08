@@ -14,23 +14,23 @@ import org.readium.r2.shared.ReadiumCSSName
 import org.readium.r2.shared.drm.DRM
 import org.readium.r2.shared.fetcher.Fetcher
 import org.readium.r2.shared.fetcher.TransformingFetcher
-import org.readium.r2.shared.format.Format
-import org.readium.r2.shared.format.MediaType
 import org.readium.r2.shared.publication.Link
 import org.readium.r2.shared.publication.Publication
+import org.readium.r2.shared.publication.asset.FileAsset
+import org.readium.r2.shared.publication.asset.PublicationAsset
 import org.readium.r2.shared.publication.encryption.Encryption
-import org.readium.r2.shared.util.File
 import org.readium.r2.shared.util.Href
 import org.readium.r2.shared.util.logging.WarningLogger
+import org.readium.r2.shared.util.mediatype.MediaType
 import org.readium.r2.streamer.PublicationParser
 import org.readium.r2.streamer.container.Container
 import org.readium.r2.streamer.container.ContainerError
 import org.readium.r2.streamer.container.PublicationContainer
 import org.readium.r2.streamer.extensions.fromArchiveOrDirectory
 import org.readium.r2.streamer.extensions.readAsXmlOrNull
-import org.readium.r2.streamer.extensions.toTitle
 import org.readium.r2.streamer.fetcher.LcpDecryptor
 import org.readium.r2.streamer.parser.PubBox
+import java.io.File
 
 object EPUBConstant {
 
@@ -77,12 +77,12 @@ object EPUBConstant {
  */
 class EpubParser : PublicationParser, org.readium.r2.streamer.parser.PublicationParser {
 
-    override suspend fun parse(file: File, fetcher: Fetcher, warnings: WarningLogger?): Publication.Builder? =
-        _parse(file, fetcher, file.toTitle())
+    override suspend fun parse(asset: PublicationAsset, fetcher: Fetcher, warnings: WarningLogger?): Publication.Builder? =
+        _parse(asset, fetcher, asset.name)
 
-    suspend fun _parse(file: File, fetcher: Fetcher, fallbackTitle: String): Publication.Builder? {
+    suspend fun _parse(asset: PublicationAsset, fetcher: Fetcher, fallbackTitle: String): Publication.Builder? {
 
-        if (file.format() != Format.EPUB)
+        if (asset.mediaType() != MediaType.EPUB)
             return null
 
         val opfPath = getRootFilePath(fetcher)
@@ -119,6 +119,7 @@ class EpubParser : PublicationParser, org.readium.r2.streamer.parser.Publication
     ): PubBox? = runBlocking {
 
         val file = File(fileAtPath)
+        val asset = FileAsset(file)
 
         var fetcher = Fetcher.fromArchiveOrDirectory(fileAtPath)
             ?: throw ContainerError.missingFile(fileAtPath)
@@ -129,7 +130,7 @@ class EpubParser : PublicationParser, org.readium.r2.streamer.parser.Publication
         }
 
         val builder = try {
-            _parse(file, fetcher, fallbackTitle)
+            _parse(asset, fetcher, fallbackTitle)
         } catch (e: Exception) {
             return@runBlocking null
         } ?: return@runBlocking null
@@ -145,7 +146,7 @@ class EpubParser : PublicationParser, org.readium.r2.streamer.parser.Publication
 
         val container = PublicationContainer(
             publication = publication,
-            path = file.file.canonicalPath,
+            path = file.canonicalPath,
             mediaType = MediaType.EPUB,
             drm = drm
         ).apply {

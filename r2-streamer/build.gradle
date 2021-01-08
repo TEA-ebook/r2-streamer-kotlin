@@ -39,7 +39,7 @@ dependencies {
     if (findProject(':r2-shared')) {
         implementation project(':r2-shared')
     } else {
-        implementation "com.github.readium:r2-shared-kotlin:2.0.0-alpha.2"
+        implementation "com.github.readium:r2-shared-kotlin:2.0.0-beta.1"
     }
 
     final JACKSON_VERSION = '2.11.0'
@@ -66,7 +66,7 @@ dependencies {
         exclude module: 'support-v4'
     }
     implementation "joda-time:joda-time:2.10.5"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.0"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2"
 
     testImplementation "junit:junit:4.13.1"
     testImplementation "org.assertj:assertj-core:3.16.1"
