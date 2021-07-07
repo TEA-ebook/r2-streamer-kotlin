@@ -22,6 +22,7 @@ import org.readium.r2.shared.publication.Publication
 import org.readium.r2.shared.publication.epub.EpubLayout
 import org.readium.r2.shared.publication.epub.layoutOf
 import org.readium.r2.shared.publication.presentation.presentation
+import org.readium.r2.shared.publication.services.isProtected
 import org.readium.r2.streamer.parser.epub.ReadiumCssLayout
 import org.readium.r2.streamer.server.Resources
 import java.io.File
@@ -71,7 +72,7 @@ internal class HtmlInjector(
 
         beginIncludes.add(getHtmlLink("/assets/readium-css/${layout.readiumCSSPath}ReadiumCSS-before.css"))
         endIncludes.add(getHtmlLink("/assets/readium-css/${layout.readiumCSSPath}ReadiumCSS-after.css"))
-        endIncludes.add(getHtmlScript("/assets/scripts/touchHandling.js"))
+        endIncludes.add(getHtmlScript("/assets/scripts/gestures.js"))
         endIncludes.add(getHtmlScript("/assets/scripts/utils.js"))
         endIncludes.add(getHtmlScript("/assets/scripts/crypto-sha256.js"))
         endIncludes.add(getHtmlScript("/assets/scripts/highlight.js"))
@@ -102,6 +103,19 @@ internal class HtmlInjector(
         }
         resourceHtml = StringBuilder(resourceHtml).insert(endHeadIndex, getHtmlFont(fontFamily = "OpenDyslexic", href = "/assets/fonts/OpenDyslexic-Regular.otf")).toString()
         resourceHtml = StringBuilder(resourceHtml).insert(endHeadIndex, "<style>@import url('https://fonts.googleapis.com/css?family=PT+Serif|Roboto|Source+Sans+Pro|Vollkorn');</style>\n").toString()
+
+        // Disable the text selection if the publication is protected.
+        // FIXME: This is a hack until proper LCP copy is implemented, see https://github.com/readium/r2-testapp-kotlin/issues/266
+        if (publication.isProtected) {
+            resourceHtml = StringBuilder(resourceHtml).insert(endHeadIndex, """
+                <style>
+                *:not(input):not(textarea) {
+                    user-select: none;
+                    -webkit-user-select: none;
+                }
+                </style>
+            """).toString()
+        }
 
         // Inject userProperties
         getProperties(publication.userSettingsUIPreset)?.let { propertyPair ->
@@ -157,7 +171,7 @@ internal class HtmlInjector(
         if (endHeadIndex == -1)
             return content
         val includes = mutableListOf<String>()
-        includes.add(getHtmlScript("/assets/scripts/touchHandling.js"))
+        includes.add(getHtmlScript("/assets/scripts/gestures.js"))
         includes.add(getHtmlScript("/assets/scripts/utils.js"))
         for (element in includes) {
             resourceHtml = StringBuilder(resourceHtml).insert(endHeadIndex, element).toString()
