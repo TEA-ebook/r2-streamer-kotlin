@@ -12,8 +12,10 @@ package org.readium.r2.streamer.server
 /**
  * Created by aferditamuriqi on 10/3/17.
  */
+@Deprecated("Use Publication::localBaseUrlOf() instead")
+const val BASE_URL = "http://127.0.0.1"
 
-
-//val PORT_NUMBER = 3333
-const val BASE_URL = "http://localhost"
-//val URL = "${BASE_URL}:${PORT_NUMBER}"
+/**
+ *
+ */
+const val DEFAULT_BUFFER_SIZE: Int = 1024 * 1024

@@ -17,9 +17,10 @@ import org.nanohttpd.protocols.http.response.Response
 import org.nanohttpd.protocols.http.response.Response.newFixedLengthResponse
 import org.nanohttpd.protocols.http.response.Status
 import org.nanohttpd.router.RouterNanoHTTPD
-import org.readium.r2.shared.Link
 import org.readium.r2.shared.MediaOverlays
-import org.readium.r2.streamer.fetcher.Fetcher
+import org.readium.r2.shared.util.mediatype.MediaType
+import org.readium.r2.shared.publication.Link
+import org.readium.r2.streamer.server.ServingFetcher
 
 
 class MediaOverlayHandler : RouterNanoHTTPD.DefaultHandler() {
@@ -29,7 +30,7 @@ class MediaOverlayHandler : RouterNanoHTTPD.DefaultHandler() {
     }
 
     override fun getMimeType(): String {
-        return "application/webpub+json"
+        return MediaType.READIUM_WEBPUB_MANIFEST.toString()
     }
 
     override fun getStatus(): IStatus {
@@ -37,7 +38,7 @@ class MediaOverlayHandler : RouterNanoHTTPD.DefaultHandler() {
     }
 
     override fun get(uriResource: RouterNanoHTTPD.UriResource?, urlParams: Map<String, String>?, session: IHTTPSession?): Response {
-        val fetcher = uriResource!!.initParameter(Fetcher::class.java)
+        val fetcher = uriResource!!.initParameter(ServingFetcher::class.java)
 
         return if (session!!.parameters.containsKey("resource")) {
             val searchQueryPath = session.parameters["resource"]!![0]
@@ -56,12 +57,14 @@ class MediaOverlayHandler : RouterNanoHTTPD.DefaultHandler() {
     }
 
     private fun getMediaOverlay(spines: List<Link>, searchQueryPath: String): MediaOverlays? {
-        for (link in spines) {
-            if (link.href!!.contains(searchQueryPath)) {
-                return link.mediaOverlays
-            }
-        }
-        return MediaOverlays()
+        // FIXME: This is not supported until the model is properly specified
+        return null
+//        for (link in spines) {
+//            if (link.href.contains(searchQueryPath)) {
+//                return link.mediaOverlays
+//            }
+//        }
+//        return MediaOverlays()
     }
 
 }
