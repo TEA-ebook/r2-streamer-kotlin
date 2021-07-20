@@ -7,13 +7,6 @@
  * LICENSE file present in the project repository where this source code is maintained.
  */
 
-package org.readium.r2.streamer.server
+package org.readium.r2.streamer.parser.epub
 
-/**
- * Created by aferditamuriqi on 10/3/17.
- */
-
-
-//val PORT_NUMBER = 3333
-const val BASE_URL = "http://localhost"
-//val URL = "${BASE_URL}:${PORT_NUMBER}"
+class SMILParser
