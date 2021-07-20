@@ -9,11 +9,14 @@
 
 package org.readium.r2.streamer.server
 
-/**
- * Created by aferditamuriqi on 10/3/17.
- */
+class Ressources {
+    val resources: MutableMap<String, String> = mutableMapOf()
 
+    fun add(key: String, body: String) {
+        resources[key] = body
+    }
 
-//val PORT_NUMBER = 3333
-const val BASE_URL = "http://localhost"
-//val URL = "${BASE_URL}:${PORT_NUMBER}"
+    fun get(key: String): String {
+        return resources[key] ?: ""
+    }
+}

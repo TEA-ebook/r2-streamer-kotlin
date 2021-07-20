@@ -9,11 +9,16 @@
 
 package org.readium.r2.streamer.server
 
-/**
- * Created by aferditamuriqi on 10/3/17.
- */
+import java.io.File
 
+class Fonts {
+    val fonts: MutableMap<String, File> = mutableMapOf()
 
-//val PORT_NUMBER = 3333
-const val BASE_URL = "http://localhost"
-//val URL = "${BASE_URL}:${PORT_NUMBER}"
+    fun add(key: String, body: File) {
+        fonts[key] = body
+    }
+
+    fun get(key: String): File {
+        return fonts[key]!!
+    }
+}

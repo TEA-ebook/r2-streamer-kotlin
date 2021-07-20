@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ Module: r2-streamer-kotlin
   ~ Developers: Aferdita Muriqi, Clément Baumann
@@ -8,12 +9,7 @@
   -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.readium.r2.streamer"
-    xmlns:tools="http://schemas.android.com/tools">
+    package="org.readium.r2.streamer">
 
-    <application
-        android:allowBackup="false"
-        android:supportsRtl="true"
-        tools:replace="android:allowBackup"/>
-
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 </manifest>
