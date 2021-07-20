@@ -51,6 +51,13 @@ class PublicationResourceHandler : RouterNanoHTTPD.DefaultHandler() {
 
         try {
             serveResponse(session, resource)
+                .apply {
+                    // Disable HTTP caching for publication resources, because it poses a security
+                    // threat for protected publications.
+                    addHeader("Cache-Control", "no-cache, no-store, must-revalidate")
+                    addHeader("Pragma", "no-cache")
+                    addHeader("Expires", "0")
+                }
         } catch(e: Resource.Exception) {
             Timber.e(e)
             responseFromFailure(e)
@@ -132,7 +139,7 @@ class PublicationResourceHandler : RouterNanoHTTPD.DefaultHandler() {
     }
 
     private fun createResponse(status: Status, mimeType: String, data: InputStream, dataLength: Long): Response {
-        val response = newChunkedResponse(status, mimeType, data.buffered(org.readium.r2.streamer.server.DEFAULT_BUFFER_SIZE))
+        val response = newChunkedResponse(status, mimeType, data.buffered())
         response.addHeader("Accept-Ranges", "bytes")
         response.addHeader("Content-Length", dataLength.toString())
         return response
